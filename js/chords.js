@@ -4,6 +4,7 @@
 
   const T = global.DiapasonTheory;
   const Audio = global.DiapasonAudio;
+  const Core = global.DiapasonGameCore;
 
   // Root notes are chosen from a comfortable octave so chords stay audible.
   const ROOT_MIN = 52; // E3
@@ -149,7 +150,8 @@
       if (inv > 0) rootVoiced = rootMidi + 12;
     }
 
-    state.current = { type: type, rootMidi: rootMidi, rootVoiced: rootVoiced, notes: notes, inv: inv };
+    state.current = { type: type, rootMidi: rootMidi, rootVoiced: rootVoiced, notes: notes, inv: inv,
+      inversionsEnabled: state.inversions };
     state.answered = false;
 
     Array.prototype.forEach.call(dom.options.children, function (btn) {
@@ -174,22 +176,31 @@
     if (state.answered || !state.current) return;
     state.answered = true;
 
-    const correctId = state.current.type.id;
-    const isRight = type.id === correctId;
+    const matches = Core.interpretations(state.current.notes, {
+      chordTypes: enabledTypes().map(function (t) { return t.id; }), inversions: state.current.inversionsEnabled,
+    });
+    const acceptedIds = [...new Set(matches.map(function (match) { return match.typeId; }))];
+    const isRight = acceptedIds.includes(type.id);
 
     Array.prototype.forEach.call(dom.options.children, function (btn) {
       btn.disabled = true;
-      if (btn.dataset.id === correctId) btn.classList.add("correct");
+      if (acceptedIds.includes(btn.dataset.id)) btn.classList.add("correct");
       else if (btn.dataset.id === type.id) btn.classList.add("wrong");
     });
 
+    const alternatives = matches.filter(function (match) {
+      return match.typeId !== state.current.type.id;
+    }).map(function (match) {
+      return T.chordName(match.rootMidi, Core.TYPE_BY_ID[match.typeId]);
+    });
+    const aliasText = alternatives.length ? " Also heard as " + [...new Set(alternatives)].join(" / ") + "." : "";
     if (isRight) {
       state.correct++;
-      dom.feedback.textContent = "✓ Correct! It was " + state.current.type.label + ".";
+      dom.feedback.textContent = "✓ Correct! It was " + state.current.type.label + "." + aliasText;
       dom.feedback.className = "feedback correct";
     } else {
       state.wrong++;
-      dom.feedback.textContent = "✗ Wrong. It was " + state.current.type.label + ".";
+      dom.feedback.textContent = "✗ Wrong. It was " + state.current.type.label + "." + aliasText;
       dom.feedback.className = "feedback wrong";
     }
     dom.correct.textContent = state.correct;

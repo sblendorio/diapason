@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/room?route=health" },
+    { "source": "/api/rooms", "destination": "/api/room?route=rooms" },
+    { "source": "/api/rooms/:code", "destination": "/api/room?route=rooms&code=:code" },
+    { "source": "/api/rooms/:code/:action", "destination": "/api/room?route=rooms&code=:code&action=:action" }
+  ]
+}

@@ -1,0 +1,11 @@
+services:
+  diapason:
+    image: ghcr.io/p4xx07/diapason:${DIAPASON_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "${DIAPASON_PORT:-4173}:4173"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4173/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

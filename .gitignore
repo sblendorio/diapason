@@ -25,3 +25,7 @@
 /vendors/*
 .DS_Store
 Thumbs.db
+.vercel
+.env*
+dist/
+node_modules/

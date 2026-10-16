@@ -131,4 +131,5 @@
     spellChord: spellChord,
     ROOT_NAMES: ROOT_NAMES,
   };
-})(window);
+  if (typeof module !== "undefined" && module.exports) module.exports = global.DiapasonTheory;
+})(typeof window !== "undefined" ? window : globalThis);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,44 +7,110 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta name="theme-color" content="#0f1220">
+  <meta name="theme-color" content="#171c1b">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('diapason-theme') || 'dark'; } catch {}</script>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/studio.css">
+  <link rel="stylesheet" href="css/dark.css">
 </head>
 <body>
   <header class="app-header">
-    <h1>🎵 Diapason</h1>
-    <p class="tagline">Train your musical ear and your reading skills</p>
-    <div class="instrument-bar">
+    <div class="brand-lockup"><div><h1>Diapason</h1><p class="tagline">MUSIC PRACTICE</p></div></div>
+    <div class="header-controls"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light mode">Light mode</button><div class="instrument-bar">
       <label for="instrument">Sound</label>
       <select id="instrument">
         <option value="piano">Piano</option>
         <option value="organ">Organ</option>
         <option value="strings">Strings</option>
       </select>
-    </div>
+    </div></div>
   </header>
 
   <main id="app">
     <!-- Home / module selection -->
     <section id="home" class="screen active">
-      <h2>Choose a module</h2>
+      <div class="home-intro">
+        <span class="eyebrow">DIAPASON</span>
+        <h2>Listen. Play.</h2>
+        <p>Chords · Notes · Friends</p>
+      </div>
       <div class="module-grid">
+        <div class="module-card featured">
+          <div class="feature-copy"><span class="module-kicker">THE LISTENING GAME</span><span class="module-title">Ready when you are.</span><span class="module-desc">12 rounds · chords + notes</span><div class="home-actions"><button id="home-play-now" class="primary" type="button">Play now <span aria-hidden="true">→</span></button><button id="home-continue" class="text-action hidden" type="button">Practice misses</button><button id="home-play-friends" class="text-action" type="button">With friends</button><button id="home-game-settings" class="text-action" type="button">Practice settings</button></div><span id="home-progress" class="home-progress hidden"></span></div>
+        </div>
         <button class="module-card" data-module="chords">
-          <span class="module-icon">🎹</span>
-          <span class="module-title">Chord Types</span>
-          <span class="module-desc">Listen to a chord and identify its type.</span>
+          <span class="module-kicker">PRACTICE / 01</span>
+          <span class="module-title">Chord types <span aria-hidden="true">↗</span></span>
         </button>
         <button class="module-card" data-module="staff">
-          <span class="module-icon">🎼</span>
-          <span class="module-title">Staff Reading</span>
-          <span class="module-desc">Identify notes shown on the staff.</span>
+          <span class="module-kicker">PRACTICE / 02</span>
+          <span class="module-title">Staff reading <span aria-hidden="true">↗</span></span>
         </button>
         <button class="module-card" data-module="explorer">
-          <span class="module-icon">👂</span>
-          <span class="module-title">Chord Explorer</span>
-          <span class="module-desc">Pick a root and a type to hear any chord — train your ear.</span>
+          <span class="module-kicker">EXPLORE / 03</span>
+          <span class="module-title">Chord explorer <span aria-hidden="true">↗</span></span>
         </button>
       </div>
+    </section>
+
+    <section id="challenge" class="screen">
+      <button class="back-btn" data-back>← Back</button>
+      <div class="challenge-heading"><span class="eyebrow">PLAY</span><h2>Set your game.</h2></div>
+      <div class="challenge-tabs" role="group" aria-label="Challenge mode">
+        <button id="challenge-solo-tab" class="active" type="button">Solo challenge</button>
+        <button id="challenge-room-tab" type="button">Play with friends</button>
+      </div>
+      <div id="challenge-setup" class="challenge-panel">
+        <div class="challenge-settings-grid">
+          <label>Questions <select id="challenge-kind"><option value="mixed">Chords + staff</option><option value="chords">Chords only</option><option value="staff">Staff only</option></select></label>
+          <label>Rounds <select id="challenge-rounds"><option>5</option><option selected>12</option><option>20</option><option>30</option></select></label>
+          <label>Seconds per round <select id="challenge-seconds"><option>15</option><option selected>25</option><option>45</option><option>60</option></select></label>
+        </div>
+        <details id="challenge-advanced" class="advanced-picker"><summary>More settings</summary>
+        <div class="challenge-settings-grid challenge-checks">
+          <label class="toggle"><input id="challenge-inversions" type="checkbox"> Mix in inversions</label>
+          <label class="toggle"><input id="challenge-arpeggio" type="checkbox"> Mix in arpeggios</label>
+          <label class="toggle"><input id="challenge-random-timbre" type="checkbox"> Mix sound colors</label>
+          <label class="toggle"><input id="challenge-treble" type="checkbox" checked> Treble clef</label>
+          <label class="toggle"><input id="challenge-bass" type="checkbox" checked> Bass clef</label>
+        </div>
+        <div class="feedback-settings"><span class="eyebrow">FEEL OF THE GAME</span><label class="toggle" id="challenge-pause-wrap"><input id="challenge-pause-reveal" type="checkbox"> Pause after each answer</label><label class="toggle"><input id="challenge-motion" type="checkbox" checked> Motion feedback</label><label class="toggle" id="challenge-haptics-wrap"><input id="challenge-haptics" type="checkbox"> Vibration on answers</label></div>
+        <details id="challenge-types-picker" class="types-picker"><summary>Chord types in this challenge</summary><div id="challenge-type-toggles" class="type-toggles"></div></details>
+        </details>
+        <div id="challenge-solo-entry"><button id="challenge-start" class="primary challenge-main-action">Start challenge →</button></div>
+        <div id="challenge-room-entry" class="hidden">
+          <div class="room-entry-grid">
+            <form id="challenge-create-form" class="room-form"><h3>Create a room</h3><label>Your name <input id="challenge-create-name" maxlength="24" required autocomplete="nickname" placeholder="Your name"></label><button class="primary" type="submit">Create room →</button></form>
+            <form id="challenge-join-form" class="room-form"><h3>Join a room</h3><label>Room code <input id="challenge-join-code" maxlength="6" required autocapitalize="characters" placeholder="ABC123"></label><label>Your name <input id="challenge-join-name" maxlength="24" required autocomplete="nickname" placeholder="Your name"></label><button class="secondary" type="submit">Join room →</button></form>
+          </div>
+        </div>
+        <p id="challenge-error" class="room-error" role="alert" hidden></p>
+      </div>
+      <div id="challenge-lobby" class="challenge-panel hidden">
+        <span class="eyebrow">YOUR ROOM</span><div class="room-code" id="challenge-room-code"></div>
+        <p class="instructions">Share this code or link. The host starts when everyone is here.</p>
+        <div class="controls"><button id="challenge-copy-link" class="secondary">Copy invite link</button><button id="challenge-leave" class="secondary">Leave room</button></div>
+        <div id="challenge-lobby-players" class="room-players"></div>
+        <button id="challenge-room-start" class="primary challenge-main-action hidden">Start match →</button>
+      </div>
+      <div id="challenge-play" class="hidden">
+        <button id="challenge-exit" class="back-btn">← Leave challenge</button>
+        <div class="game-hud"><div><span class="eyebrow">ROUND</span><strong id="challenge-progress">01 / 12</strong></div><div><span class="eyebrow">SCORE</span><strong id="challenge-score">0</strong></div><div><span class="eyebrow">STREAK</span><strong id="challenge-streak">0</strong></div><div><span class="eyebrow">TIME</span><strong id="challenge-time">25s</strong></div></div>
+        <div class="timer-track"><div id="challenge-timer-fill"></div></div>
+        <div class="question-stage">
+          <span id="challenge-question-label" class="eyebrow"></span>
+          <h3 id="challenge-prompt"></h3>
+          <div id="challenge-sound-visual" class="sound-visual" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div id="challenge-stimulus" class="staff-render"></div>
+          <button id="challenge-replay" class="primary">▶ Play again <kbd>Space</kbd></button>
+          <p id="challenge-waiting" class="instructions hidden"></p>
+        </div>
+        <div class="answers-heading"><span class="eyebrow">CHOOSE ONE</span><span id="challenge-answer-range">1–4</span></div>
+        <div id="challenge-options" class="game-options"></div>
+        <div id="challenge-result" class="result-card hidden"><span id="challenge-result-label" class="eyebrow">THE ANSWER</span><div id="challenge-feedback" class="challenge-feedback" aria-live="polite"></div><div id="challenge-reveal" class="hidden"><div id="challenge-reveal-name" class="chord-name"></div><div id="challenge-staff-contrast" class="staff-contrast hidden" aria-live="polite"><span id="challenge-staff-choice-label"></span><span id="challenge-staff-answer-label"></span></div><div id="challenge-reveal-staff" class="staff-render hidden"></div><p id="challenge-learning" class="learning-cue"></p><span id="challenge-piano-caption" class="piano-caption hidden" aria-live="polite"></span><div id="challenge-reveal-piano" class="piano-render"></div></div><div class="result-actions"><button id="challenge-compare" class="secondary hidden" type="button">▶ Compare sounds</button><button id="challenge-result-replay" class="secondary" type="button">▶ Hear it again</button><button id="challenge-next" class="primary hidden" type="button">Next question →</button><button id="challenge-hold" class="text-action hidden" type="button">Pause here</button></div><p id="challenge-advance-hint" class="advance-hint hidden"></p></div>
+        <div id="challenge-standings" class="room-players hidden"></div>
+      </div>
+      <div id="challenge-finish" class="challenge-panel hidden"><span class="eyebrow">SESSION COMPLETE</span><h2 id="challenge-finish-title">Nice work.</h2><p id="challenge-finish-summary"></p><p id="challenge-finish-note" class="finish-note hidden"></p><div id="challenge-recap" class="recap-grid hidden"></div><div id="challenge-final-standings" class="room-players"></div><div class="finish-actions"><button id="challenge-finish-action" class="primary">Play again →</button><button id="challenge-review" class="secondary hidden">Review misses</button></div></div>
     </section>
 
     <!-- Chord module -->
@@ -158,16 +224,19 @@
   </main>
 
   <footer class="app-footer">
-    <p>Diapason — built with vanilla HTML, CSS &amp; JavaScript.</p>
+    <p>Diapason · Listen closely.</p>
   </footer>
 
   <script src="js/audio.js"></script>
   <script src="js/theory.js"></script>
+  <script src="js/game-core.js"></script>
+  <script src="js/progress-core.js"></script>
   <script src="js/staff-render.js"></script>
   <script src="js/piano-render.js"></script>
   <script src="js/chords.js"></script>
   <script src="js/staff.js"></script>
   <script src="js/explorer.js"></script>
+  <script src="js/challenge.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

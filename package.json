@@ -1,0 +1,11 @@
+{
+  "name": "diapason",
+  "version": "1.2.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

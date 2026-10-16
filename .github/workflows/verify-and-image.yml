@@ -1,0 +1,45 @@
+name: Verify and publish image
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm test
+      - run: npm run build
+
+  image:
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry
+        run: echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish
+        run: |
+          image=ghcr.io/p4xx07/diapason
+          docker build -t "$image:$GITHUB_SHA" .
+          docker push "$image:$GITHUB_SHA"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            docker tag "$image:$GITHUB_SHA" "$image:$GITHUB_REF_NAME"
+            docker push "$image:$GITHUB_REF_NAME"
+          elif [ "$GITHUB_REF_NAME" = main ]; then
+            docker tag "$image:$GITHUB_SHA" "$image:latest"
+            docker push "$image:latest"
+          fi
